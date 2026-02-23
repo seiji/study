@@ -4,19 +4,61 @@ mod! PNAT1 {
   op s : PNat -> PNat {constr} .
   op _+_ : PNat PNat -> PNat .
   op _*_ : PNat PNat -> PNat .
+  op fact1 : PNat -> PNat .
+  op fact2 : PNat -> PNat .
+  op sfact2 : PNat PNat -> PNat .
+
   vars X Y Z : PNat .
+
   eq (0 = s(Y)) = false .
   eq (s(X) = s(Y)) = (X = Y) .
+
   eq 0 + Y = Y .
   eq s(X) + Y = s(X + Y) .
+
   eq 0 * Y = 0 .
   eq s(X) * Y = (X * Y) + Y .
 
+  eq fact1(0) = s(0) .
+  eq fact1(s(X)) = s(X) * fact1(X) .
+  eq fact2(X) = sfact2(X, s(0)) .
+  eq sfact2(0, Y) = Y .
+  eq sfact2(s(X), Y) = sfact2(X, s(X) * Y) .
 }
 
+--> ## Associativity of _+_
 open PNAT1 .
   ops x y z : -> PNat .
-  eq (x + Y) + Z = x + (Y + Z) .
+  -- Base Case
   red (0 + y) + z = 0 + (y + z) .
+  -- Induction Case
+  eq (x + Y) + Z = x + (Y + Z) . -- IH
   red (s(x) + y) + z = s(x) + (y + z) .
+close
+
+--> ## Commutativity of Right zero of _+_ X + 0 = X
+open PNAT1 .
+  op x : -> PNat .
+  -- Base case
+  red 0 + 0 = 0 .
+  -- Induction Case
+  eq x + 0 = x .
+  red s(x) + 0 = s(x) .
+close
+
+--> ## Commutativity of Right succ of _+_ X + s(Y) = S(X+Y)
+open PNAT1 .
+  ops x y : -> PNat .
+  -- Base case
+  red 0 + s(y) = s(0 + y) .
+  -- Induction case
+  eq x + s(Y) = s(x + Y) .
+  red s(x) + s(y) = s(s(x) + y) .
+close
+
+open PNAT1 .
+  op x y : -> PNat .
+  eq X + 0  = X .
+  red 0 + y = y + 0 .
+
 close
